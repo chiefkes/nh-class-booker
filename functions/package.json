@@ -1,0 +1,32 @@
+{
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log",
+    "localHTTPtest": "curl -i -H 'Accept: application/json' -X GET http://localhost:5001/nuffield-health-class-booker/europe-west2/scheduledBookerOnRun"
+  },
+  "engines": {
+    "node": "14"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "camelcase": "^6.2.0",
+    "child_process": "^1.0.2",
+    "find-process": "^1.4.4",
+    "firebase-admin": "^9.2.0",
+    "firebase-function-tools": "^2.0.1",
+    "firebase-functions": "^3.14.1",
+    "fkill": "^7.1.1",
+    "luxon": "^1.26.0",
+    "puppeteer": "^9.0.0"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^0.2.0"
+  },
+  "private": true
+}
