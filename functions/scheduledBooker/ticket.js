@@ -1,13 +1,13 @@
 "use strict";
 
-const { logger } = require("./logger.js");
-const config = require("./config.js");
+const { logger } = require("../old/logger.js");
+const config = require("../old/config.js");
 const { DateTime } = require("luxon");
-const { today } = require("./date.js");
+const { today } = require("../old/date.js");
 const admin = require("firebase-admin");
 const db = admin.firestore();
 
-exports.bookingTicketChecker = async () => {
+async function checkTickets() {
   let match = null;
   const startOfToday = today.startOf("day");
   const tickets = await db.collection("BookingTickets").get();
@@ -21,7 +21,7 @@ exports.bookingTicketChecker = async () => {
     if (ticketHasExpired(startOfTicketDay, startOfToday)) {
       logger(`Booking ticket on ${ticket.id} has expired`);
       if (config.booking.deleteExpiredTickets) {
-        ticketCleanup(ticket);
+        deleteTicket(ticket);
       }
     }
     if (ticketDateMatches(startOfTicketDay, startOfToday)) {
@@ -38,7 +38,7 @@ exports.bookingTicketChecker = async () => {
     );
   else logger("No booking ticket for today. Exiting...");
   return match;
-};
+}
 
 const ticketDateMatches = (startOfTicketDay, startOfToday) => {
   if (startOfTicketDay.equals(startOfToday.plus({ days: 8 }))) {
@@ -54,7 +54,7 @@ const ticketHasExpired = (startOfTicketDay, startOfToday) => {
   return false;
 };
 
-const ticketCleanup = (ticket) => {
+function deleteTicket(ticket) {
   logger(`Deleting ticket...`);
   ticket.ref
     .delete()
@@ -64,6 +64,9 @@ const ticketCleanup = (ticket) => {
     .catch((error) => {
       logger(`Error deleting booking ticket: ${ticket.id}`);
     });
-};
+}
 
-exports.ticketCleanup = ticketCleanup;
+module.exports = {
+  checkTickets,
+  deleteTicket,
+};
