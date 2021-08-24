@@ -1,22 +1,18 @@
 "use strict";
 
-const { logger } = require("../old/logger.js");
-const config = require("../old/config.js");
+const { logger } = require("./logger.js");
+const config = require("./config.js");
 const { DateTime } = require("luxon");
-const { today } = require("../old/date.js");
+const { startOfToday, startOfDayFromISO } = require("./date.js");
 const admin = require("firebase-admin");
 const db = admin.firestore();
 
 async function checkTickets() {
   let match = null;
-  const startOfToday = today.startOf("day");
   const tickets = await db.collection("BookingTickets").get();
   tickets.forEach((ticket) => {
-    let ticketObj = ticket.data();
-    let startOfTicketDay = DateTime.fromISO(ticketObj.Date)
-      .setLocale("en-GB")
-      .setZone("Europe/London")
-      .startOf("day");
+    let ticketData = ticket.data();
+    let startOfTicketDay = startOfDayFromISO(ticketData.Date);
 
     if (ticketHasExpired(startOfTicketDay, startOfToday)) {
       logger(`Booking ticket on ${ticket.id} has expired`);
@@ -25,8 +21,8 @@ async function checkTickets() {
       }
     }
     if (ticketDateMatches(startOfTicketDay, startOfToday)) {
-      config.booking.classesToBook = ticketObj.classesToBook;
-      config.booking.timesToBook = ticketObj.timesToBook;
+      config.booking.classesToBook = ticketData.classesToBook;
+      config.booking.timesToBook = ticketData.timesToBook;
       match = ticket;
     }
   });

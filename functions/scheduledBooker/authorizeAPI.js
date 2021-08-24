@@ -5,8 +5,10 @@ const $ = require("jquery-jsdom");
 const Cookie = require("./cookie.js");
 const config = require("./config.js").booking;
 const constants = require("./constants.js");
+const headers = constants.headers;
 const { wait } = require("./wait.js");
 const validate = require("./validation.js");
+const Err = require("./error.js");
 
 module.exports = async function authorizeAPI() {
   console.log(`---- Authorizing API ----`);
@@ -32,9 +34,10 @@ module.exports = async function authorizeAPI() {
 
 async function withRetries(name, func, predicate) {
   let errors = 0;
+
   for (let attempt = 0; attempt <= config.numBookingChecks; attempt++) {
-    console.log(`Getting ${name} (attempt ${attempt + 1})`);
     try {
+      console.log(`Getting ${name} (attempt ${attempt + 1})`);
       let res = await func();
       if (typeof predicate === "function") predicate(res);
       else if (Array.isArray(predicate)) predicate.forEach((test) => test(res));
@@ -44,8 +47,7 @@ async function withRetries(name, func, predicate) {
       errors++;
       console.error(err);
       if (errors >= config.errorRetries) {
-        console.error("Too many errors! Exiting");
-        return false;
+        throw new Err("AUTH_API", `Too many errors getting getting ${name}!`);
       }
       //exponential back-off
       await wait(2 ** (errors / 2) * 200);
@@ -71,12 +73,9 @@ async function getAuthToken(SSOToken) {
     },
   });
 
-  let authToken = response.data.auth_token;
-  let member_ID = response.data._embedded.members[0].id;
-
   return {
-    authToken,
-    member_ID,
+    authToken: response.data.auth_token,
+    member_ID: response.data._embedded.members[0].id,
   };
 }
 
@@ -128,7 +127,6 @@ async function onMicrosoftSubmitCredentials(cookies, settings) {
   });
 
   let newCookies = Cookie.parseSetCookie(res.headers, "x-ms-cpim");
-
   validate.cookies(newCookies, 2);
 
   return {

@@ -31,9 +31,17 @@ const millisFromFormat = (string) => {
     .toMillis();
 };
 
+const startOfDayFromISO = (isoDate) => {
+  return DateTime.fromISO(isoDate)
+    .setLocale("en-GB")
+    .setZone("Europe/London")
+    .startOf("day");
+};
+
 const today = DateTime.utc().setLocale("en-GB").setZone("Europe/London");
 const timetableDateString = today.plus({ days: 8 }).toFormat("yyyy-MM-dd");
 const todayDateString = today.toFormat("yyyy-MM-dd");
+const startOfToday = today.startOf("day");
 
 module.exports = {
   timeNowString,
@@ -41,6 +49,8 @@ module.exports = {
   timeNowMillis,
   millisFromFormat,
   today,
+  startOfToday,
+  startOfDayFromISO,
   timetableDateString,
   todayDateString,
 };
