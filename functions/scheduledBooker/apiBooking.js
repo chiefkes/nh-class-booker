@@ -156,16 +156,15 @@ const getAvailClasses = async () => {
       timeSlotMatches(event.datetime) &&
       !classAlreadyBooked(event.datetime, bookedClasses)
     ) {
-      return availClasses.concat({
+      availClasses = availClasses.concat({
         event_id: event.id,
         event_chain_id: event.event_chain_id,
         description: event.description,
         datetime: event.datetime,
         isBookable: event.bookable,
       });
-    } else {
-      return availClasses;
     }
+    return availClasses;
   }, []);
 };
 
