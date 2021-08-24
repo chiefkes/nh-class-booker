@@ -41,15 +41,10 @@ module.exports = async function apiBooking(authToken, member_ID) {
     try {
       logger(`---- API Booking attempt: ${attempt + 1} ----`);
       let availClasses = await getAvailClasses();
+      let numAvailClasses = availClasses.length;
+      processAvailClasses(numAvailClasses, results);
 
-      if (results.totalNumAvailClasses === null && availClasses.length >= 1) {
-        results.totalNumAvailClasses = availClasses.length;
-        logger(`Total avail classes: ${results.totalNumAvailClasses}`);
-      } else {
-        logger(`Avail classes for attempt: ${availClasses.length}`);
-      }
-
-      if (availClasses.length >= 1) {
+      if (numAvailClasses >= 1) {
         results.booking = results.booking.concat(
           await bookClasses(availClasses)
         );
@@ -58,28 +53,9 @@ module.exports = async function apiBooking(authToken, member_ID) {
         );
       }
 
-      // check at least two times (attempt > 1) to see if we've booked all available classes
-      if (
-        results.totalNumAvailClasses >= 1 &&
-        results.booking.length >= results.totalNumAvailClasses &&
-        availClasses.length == 0 &&
-        attempt >= 1
-      ) {
-        logger(`---- Booked classes info ----`);
-        logger(results.booking);
-        break;
-      }
+      if (isBookingCompleted(attempt, numAvailClasses, results) === true) break;
 
-      // if we fail to book anything try expanding the time slot
-      if (
-        attempt >= config.numBookingChecks / 2 - 1 &&
-        config.timeFallback == true &&
-        (config.timesToBook.AM == false || config.timesToBook.PM == false)
-      ) {
-        logger(`!!!! Expanding Time Slot !!!!`);
-        config.timesToBook.AM = true;
-        config.timesToBook.PM = true;
-      }
+      tryExpandingTimeSlot(attempt);
 
       await wait(1000);
     } catch (err) {
@@ -94,6 +70,7 @@ module.exports = async function apiBooking(authToken, member_ID) {
       }
     }
   }
+
   if (results.booking.length === 0)
     throw new Err(
       "NO_CLASSES_BOOKED",
@@ -105,6 +82,43 @@ module.exports = async function apiBooking(authToken, member_ID) {
     numErrors: results.errorCounter,
   };
 };
+
+function processAvailClasses(numAvailClasses, results) {
+  if (results.totalNumAvailClasses === null && numAvailClasses >= 1) {
+    results.totalNumAvailClasses = numAvailClasses;
+    logger(`Total avail classes: ${results.totalNumAvailClasses}`);
+  } else {
+    logger(`Avail classes for attempt: ${numAvailClasses}`);
+  }
+}
+
+function isBookingCompleted(attempt, numAvailClasses, results) {
+  // check at least two times (attempt > 1) to see if we've booked all available classes
+  if (
+    results.totalNumAvailClasses >= 1 &&
+    results.booking.length >= results.totalNumAvailClasses &&
+    numAvailClasses == 0 &&
+    attempt >= 1
+  ) {
+    logger(`---- Booked classes info ----`);
+    logger(results.booking);
+    return true;
+  }
+  return false;
+}
+
+function tryExpandingTimeSlot(attempt) {
+  // if we fail to book anything try expanding the time slot
+  if (
+    attempt >= config.numBookingChecks / 2 - 1 &&
+    config.timeFallback == true &&
+    (config.timesToBook.AM == false || config.timesToBook.PM == false)
+  ) {
+    logger(`!!!! Expanding Time Slot !!!!`);
+    config.timesToBook.AM = true;
+    config.timesToBook.PM = true;
+  }
+}
 
 const getBookedClassDatetimes = async () => {
   logger("Getting current list of Booked Classes...");
