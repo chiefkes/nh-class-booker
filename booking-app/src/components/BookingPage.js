@@ -20,6 +20,7 @@ import BookingModal from "./BookingModal";
 // @ts-ignore
 import { useStyles } from "./../style/BookingPageStyles";
 import BookingTable from "./BookingTable";
+import Sticky from "./Sticky";
 
 export const getMinDate = () => {
   let timeNow = DateTime.utc();
@@ -29,6 +30,15 @@ export const getMinDate = () => {
     return timeNow.plus({ days: 9 }).toFormat("yyyy-MM-dd");
   }
 };
+
+// function bookingReducer(state, action) {
+//   switch (action.type) {
+//     case "":
+//       return {};
+//     default:
+//       throw new Error("Unsupported action type in bookingReducer");
+//   }
+// }
 
 const BookingPage = ({ user }) => {
   const classes = useStyles();
@@ -41,8 +51,6 @@ const BookingPage = ({ user }) => {
   const [classesToBook, setClassesToBook] = useState([]);
   const [AM, setAM] = useState(Boolean);
   const [PM, setPM] = useState(Boolean);
-  const [isSticky, setIsSticky] = useState(false);
-  const sentinelRef = useRef(null);
 
   const handleClose = () => {
     setOpen(false);
@@ -79,6 +87,7 @@ const BookingPage = ({ user }) => {
       setLoading(false);
     }
   };
+
   const getOneTicket = async (id) => {
     try {
       setFormMode(false);
@@ -141,25 +150,6 @@ const BookingPage = ({ user }) => {
     getlist();
   }, []);
 
-  useEffect(() => {
-    const sentinel = sentinelRef?.current;
-    const observer = new IntersectionObserver(
-      ([e]) => {
-        setIsSticky(!e.isIntersecting);
-      },
-      { threshold: [0, 1] }
-    );
-
-    if (sentinel) {
-      observer.observe(sentinel);
-    }
-
-    // clean up the observer
-    return () => {
-      observer.unobserve(sentinel);
-    };
-  }, [sentinelRef]);
-
   return (
     <div className={classes.main}>
       <br></br>
@@ -179,33 +169,41 @@ const BookingPage = ({ user }) => {
         </TableContainer>
         <ToastContainer />
       </Container>
-      <div ref={sentinelRef}></div>
-      <Container
-        className={classes.stickyContainer}
-        style={isSticky ? { backgroundColor: "#F7F7F7" } : {}}
-      >
-        <Grid container alignItems="center" className={classes.stickyHeader}>
-          <Grid item xs={8}>
-            <Typography
-              className={classes.upcomingBookings}
-              variant="h6"
-              component="div"
+      <Sticky>
+        {(isSticky) => (
+          <Container
+            // ref={sentinelRef}
+            className={classes.stickyContainer}
+            style={isSticky ? { backgroundColor: "#F7F7F7" } : {}}
+          >
+            <Grid
+              container
+              alignItems="center"
+              className={classes.stickyHeader}
             >
-              Your upcoming bookings
-            </Typography>
-          </Grid>
-          <Grid item xs={4}>
-            <Button
-              variant="contained"
-              onClick={handleAdd}
-              className={classes.button}
-              startIcon={<AddCircle />}
-            >
-              Add
-            </Button>
-          </Grid>
-        </Grid>
-      </Container>
+              <Grid item xs={8}>
+                <Typography
+                  className={classes.upcomingBookings}
+                  variant="h6"
+                  component="div"
+                >
+                  Your upcoming bookings
+                </Typography>
+              </Grid>
+              <Grid item xs={4}>
+                <Button
+                  variant="contained"
+                  onClick={handleAdd}
+                  className={classes.button}
+                  startIcon={<AddCircle />}
+                >
+                  Add
+                </Button>
+              </Grid>
+            </Grid>
+          </Container>
+        )}
+      </Sticky>
       <Container
         className={classes.mainContainer}
         style={{ paddingBottom: "80px" }}
