@@ -30,7 +30,7 @@ export const getMinDate = () => {
   }
 };
 
-const BookingPage = (props) => {
+const BookingPage = ({ user }) => {
   const classes = useStyles();
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -165,7 +165,7 @@ const BookingPage = (props) => {
       <br></br>
       <Container className={classes.mainContainer}>
         <Typography className={classes.greeting} variant="h3" component="div">
-          Hello {props.user.firstName}
+          Hello {user.displayName}
         </Typography>
         <TableContainer className={classes.greetingText}>
           <Typography

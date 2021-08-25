@@ -17,7 +17,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { BeatLoader } from "react-spinners";
 import firebase from "./../services/firestore";
-const firestore = firebase.firestore();
 
 const Login = (props) => {
   const classes = useStyles();
@@ -33,42 +32,13 @@ const Login = (props) => {
         justify-content: center;
     `;
 
-  const handleEmail = (event) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePassword = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleCheck = (event) => {
-    setRememberMe(event.target.checked);
-  };
-
-  const handlerLogin = () => {
+  const handleLogin = () => {
     setLoading(true);
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then((response) => {
-        firestore
-          .collection("users")
-          .doc(response.user.uid)
-          .get()
-          .then((doc) => {
-            const firstName = doc.data().firstName;
-            const { user } = response;
-            const data = {
-              userId: user.uid,
-              email: user.email,
-              firstName: firstName,
-            };
-            localStorage.setItem("user", JSON.stringify(data));
-            const storage = localStorage.getItem("user");
-            const loggedInUser = storage !== null ? JSON.parse(storage) : null;
-            props.loggedIn(loggedInUser);
-            setLoading(false);
-          });
+        setLoading(false);
       })
       .catch((error) => {
         toast.error(error.message);
@@ -93,7 +63,7 @@ const Login = (props) => {
               Sign In
             </Typography> */}
             <ValidatorForm
-              onSubmit={handlerLogin}
+              onSubmit={handleLogin}
               onError={(errors) => {
                 for (const err of errors) {
                   console.log(err.props.errorMessages[0]);
@@ -106,7 +76,7 @@ const Login = (props) => {
                 margin="normal"
                 fullWidth
                 label="Email"
-                onChange={handleEmail}
+                onChange={(event) => setEmail(event.target.value)}
                 name="email"
                 value={email}
                 validators={["required", "isEmail"]}
@@ -118,7 +88,7 @@ const Login = (props) => {
                 variant="outlined"
                 fullWidth
                 label="Password"
-                onChange={handlePassword}
+                onChange={(event) => setPassword(event.target.value)}
                 name="password"
                 type="password"
                 value={password}
@@ -131,7 +101,7 @@ const Login = (props) => {
                 control={
                   <Checkbox
                     value={rememberme}
-                    onChange={(e) => handleCheck(e)}
+                    onChange={(event) => setRememberMe(event.target.checked)}
                     color="primary"
                   />
                 }

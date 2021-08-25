@@ -12,14 +12,14 @@ import {
 import PersonIcon from "@material-ui/icons/Person";
 import firebase from "./../services/firestore";
 
-const NavBar = (props) => {
+const NavBar = ({ user }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
-  const handleClose = () => {
-    localStorage.removeItem("user");
-    props.setUserState();
+  const handleLogout = () => {
+    // localStorage.removeItem("user");
+    // setUserState();
     firebase.auth().signOut();
     setAnchorEl(null);
   };
@@ -49,10 +49,10 @@ const NavBar = (props) => {
                 onClick={() => window.location.reload()}
                 style={{ cursor: "pointer" }}
               />
-              {props.user && (
+              {user && (
                 <div className={classes.loginDiv}>
                   <span className={classes.userName} onClick={handleMenu}>
-                    Hi {props.user.firstName}
+                    Hi {user.displayName}
                   </span>
                   <IconButton
                     aria-label="account of current user"
@@ -80,7 +80,7 @@ const NavBar = (props) => {
                     onClose={handleExit}
                     getContentAnchorEl={null}
                   >
-                    <MenuItem onClick={handleClose}>Logout</MenuItem>
+                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
                   </Menu>
                 </div>
               )}

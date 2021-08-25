@@ -1,35 +1,21 @@
-import { useEffect, useState } from "react";
+import React from "react";
 import "./App.css";
 import NavBar from "./components/NavBar";
 import Login from "./authentication/Login";
 import BookingPage from "./components/BookingPage";
-import React from "react";
+import useUserAuthState from "./hooks/useUserAuthState";
+import firebase from "./services/firestore";
 
 function App() {
-  const [user, setUser] = useState(null);
-  const userState = () => {
-    const data = localStorage.getItem("user");
-    const us = data !== null ? JSON.parse(data) : null;
-    setUser(us);
-  };
+  const [user, loading, error] = useUserAuthState(firebase.auth());
 
-  useEffect(() => {
-    userState();
-  }, []);
+  if (error) return <p>{error}</p>;
+  if (loading) return <NavBar user={user} />;
 
   return (
     <>
-      {user !== null ? (
-        <>
-          <NavBar user={user} setUserState={() => setUser(null)} />
-          <BookingPage user={user} />
-        </>
-      ) : (
-        <>
-          <NavBar user={user} />
-          <Login loggedIn={(user) => setUser(user)} />
-        </>
-      )}
+      <NavBar user={user} />
+      {user !== null ? <BookingPage user={user} /> : <Login />}
     </>
   );
 }
