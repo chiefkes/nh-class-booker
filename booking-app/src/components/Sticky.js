@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import PropTypes from "prop-types";
 
 export default function Sticky({ children }) {
   const [isSticky, setIsSticky] = useState(false);
@@ -30,3 +31,7 @@ export default function Sticky({ children }) {
     </>
   );
 }
+
+Sticky.propTypes = {
+  children: PropTypes.func.isRequired,
+};

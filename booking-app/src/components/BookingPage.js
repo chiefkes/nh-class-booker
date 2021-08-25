@@ -172,9 +172,8 @@ const BookingPage = ({ user }) => {
       <Sticky>
         {(isSticky) => (
           <Container
-            // ref={sentinelRef}
             className={classes.stickyContainer}
-            style={isSticky ? { backgroundColor: "#F7F7F7" } : {}}
+            style={{ backgroundColor: isSticky && "#F7F7F7" }}
           >
             <Grid
               container
