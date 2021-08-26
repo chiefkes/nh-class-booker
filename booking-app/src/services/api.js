@@ -1,15 +1,11 @@
-import firebase from "./firestore";
-// import bookingTicket from "./bookingTicket";
-
+import firebase from "./firebase";
 const firestore = firebase.firestore();
 
-class bookingTicket {
-  constructor(id, Date, classesToBook, timesToBook) {
-    this.id = id;
-    this.Date = Date;
-    this.classesToBook = classesToBook;
-    this.timesToBook = timesToBook;
-  }
+function bookingTicket(id, Date, classesToBook, timesToBook) {
+  this.id = id;
+  this.Date = Date;
+  this.classesToBook = classesToBook;
+  this.timesToBook = timesToBook;
 }
 
 export const getTickets = async () => {

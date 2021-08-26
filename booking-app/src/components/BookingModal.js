@@ -1,7 +1,8 @@
-import React from "react";
-import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import React, { useState, useContext } from "react";
+import GlobalReducerContext from "../contexts/GlobalReducerContext";
+import getMinDate from "../utils/getMinDate";
 import LuxonUtils from "@date-io/luxon";
-
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import {
   Dialog,
   DialogActions,
@@ -20,53 +21,78 @@ import {
 } from "@material-ui/core";
 import { AddCircle, HighlightOff } from "@material-ui/icons";
 import { ValidatorForm } from "react-material-ui-form-validator";
-import { getMinDate } from "./BookingPage";
 import { FormControl } from "@material-ui/core";
 import { useStyles } from "./../style/BookingModalStyles";
 
+const allClasses = [
+  "BODYPUMP™",
+  "BODYATTACK™",
+  "BODYBALANCE™",
+  "BODYCOMBAT™",
+  "Pilates",
+  "SKILL HIIT",
+  "SKILLROW",
+];
+
+// TODO:
+// Make Multi-Chip Delete into an extendable component
+// Even NPM publishable
 const BookingModal = (props) => {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [checkBoxError, setCheckBoxError] = React.useState(false);
-  const [classError, setClassError] = React.useState(false);
-  const allClasses = [
-    "BODYPUMP™",
-    "BODYATTACK™",
-    "BODYBALANCE™",
-    "Pilates",
-    "Swimming-Family",
-    "Swimming-Kids Pool",
-    "Swimming-Adult",
-  ];
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [checkBoxError, setCheckBoxError] = useState(false);
+  const [classError, setClassError] = useState(false);
   const numGymClasses = allClasses.length;
+  const [state, dispatch] = useContext(GlobalReducerContext);
+  const {
+    classesToBook,
+    timesToBook,
+    modalIsOpen,
+    date,
+    ticketMode,
+    ticketID,
+  } = state;
 
-  const handleAddButton = (event) => {
-    if (props.classesToBook.length >= numGymClasses) return;
+  const handleClassesMenu = (event) => {
+    if (classesToBook.length >= numGymClasses) return;
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = (menuItem) => {
+  const handleAddClass = (classToAdd) => {
+    console.log("close");
     setAnchorEl(null);
     setClassError(false);
-    props.addClassToBook(menuItem);
+    dispatch({ type: "ADD_CLASS", classToAdd });
   };
 
-  const handleDialogClose = () => {
-    props.close();
+  const handleExit = () => {
+    dispatch({ type: "MODAL", modalIsOpen: false });
     setCheckBoxError(false);
     setClassError(false);
   };
 
   const onSubmit = () => {
-    if (props.classesToBook.length === 0) {
+    if (classesToBook.length === 0) {
       setClassError(true);
       return;
     }
-    if (!props.AM && !props.PM) {
+    if (!timesToBook.AM && !timesToBook.PM) {
       setCheckBoxError(true);
       return;
     }
-    props.addTicket();
+
+    const ticket = {
+      Date: date,
+      classesToBook,
+      timesToBook: timesToBook,
+    };
+
+    dispatch({
+      type: ticketMode === "Add" ? "ADD_TICKET" : "UPDATE_TICKET",
+      ticket,
+      ticketID,
+    });
+
     setCheckBoxError(false);
     setClassError(false);
   };
@@ -75,18 +101,21 @@ const BookingModal = (props) => {
     if (event.target.checked) {
       setCheckBoxError(false);
     }
-    props.changeTimesToBook(event);
+    dispatch({
+      type: "TIMES",
+      timesToBook: { [event.target.name]: event.target.checked },
+    });
   };
 
   return (
     <Dialog
       maxWidth="sm"
-      open={props.open}
-      onClose={props.close}
+      open={modalIsOpen}
+      onClose={handleExit}
       aria-labelledby="max-width-dialog-title"
     >
       <DialogTitle>
-        {props.formmode ? "Add New" : "Update"} Booking Ticket
+        {ticketMode === "Add" ? "Add New" : "Update"} Booking Ticket
       </DialogTitle>
       <ValidatorForm onSubmit={onSubmit}>
         <DialogContent>
@@ -102,9 +131,14 @@ const BookingModal = (props) => {
                   autoOk={true}
                   invalidLabel={""}
                   inputVariant={"outlined"}
-                  value={props.Date}
+                  value={date}
                   format="EEE d MMM yyyy"
-                  onChange={props.changeDate}
+                  onChange={(event) =>
+                    dispatch({
+                      type: "DATE",
+                      date: event.toFormat("yyyy-MM-dd"),
+                    })
+                  }
                 />
               </MuiPickersUtilsProvider>
             </Grid>
@@ -116,7 +150,7 @@ const BookingModal = (props) => {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={props.AM}
+                          checked={timesToBook.AM}
                           onChange={handleCheckBox}
                           name="AM"
                           style={{ color: "#00a200" }}
@@ -127,7 +161,7 @@ const BookingModal = (props) => {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={props.PM}
+                          checked={timesToBook.PM}
                           onChange={handleCheckBox}
                           name="PM"
                           style={{ color: "#00a200" }}
@@ -155,7 +189,7 @@ const BookingModal = (props) => {
 
             <Grid item xs={12}>
               <div className={classes.chips}>
-                {props.classesToBook.map((thisClass, i = 1) => {
+                {classesToBook.map((thisClass) => {
                   return (
                     <Chip
                       deleteIcon={
@@ -173,15 +207,17 @@ const BookingModal = (props) => {
                       label={thisClass}
                       key={thisClass}
                       data-label={thisClass}
-                      onDelete={() => props.deleteClassToBook(thisClass)}
+                      onDelete={() =>
+                        dispatch({ type: "REMOVE_CLASS", key: thisClass })
+                      }
                     />
                   );
                 })}
-                {props.classesToBook.length < numGymClasses ? (
+                {classesToBook.length < numGymClasses ? (
                   <Chip
                     key={"add-class"}
                     label={"Add Class"}
-                    onClick={handleAddButton}
+                    onClick={handleClassesMenu}
                     className={classes.chip}
                     color={"primary"}
                     icon={<AddCircle />}
@@ -210,13 +246,11 @@ const BookingModal = (props) => {
                 open={Boolean(anchorEl)}
               >
                 {allClasses
-                  .filter(
-                    (thisClass) => !props.classesToBook.includes(thisClass)
-                  )
+                  .filter((thisClass) => !classesToBook.includes(thisClass))
                   .map((thisClass) => {
                     return (
                       <MenuItem
-                        onClick={() => handleMenuClose(thisClass)}
+                        onClick={() => handleAddClass(thisClass)}
                         key={thisClass}
                         value={thisClass}
                       >
@@ -230,9 +264,9 @@ const BookingModal = (props) => {
         </DialogContent>
         <DialogActions>
           <Button type="submit" color="secondary">
-            {props.formmode ? "Add" : "Update"}
+            {ticketMode}
           </Button>
-          <Button onClick={handleDialogClose} color="primary">
+          <Button onClick={handleExit} color="primary">
             Close
           </Button>
         </DialogActions>

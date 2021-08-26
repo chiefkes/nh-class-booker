@@ -1,12 +1,15 @@
+import React, { useContext } from "react";
+import GlobalReducerContext from "../contexts/GlobalReducerContext";
+import { DateTime } from "luxon";
 import { Button } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
-import { DateTime } from "luxon";
-import React from "react";
 import { Col, Grid, Row } from "react-flexbox-grid";
 import { BeatLoader } from "react-spinners";
 import { useStyles } from "./../style/BookingTableStyles";
 
-const BookingTable = (props) => {
+const BookingTable = () => {
+  const [state, dispatch] = useContext(GlobalReducerContext);
+  const { tickets, loading } = state;
   const classes = useStyles();
   const override = `
     display: flex;
@@ -17,20 +20,20 @@ const BookingTable = (props) => {
   return (
     <div className={classes.tableRoot}>
       <div>
-        {props.tickets.length === 0 ? (
+        {tickets.length === 0 ? (
           <div className={classes.tableRowLoading}>
             <div>
               <BeatLoader
                 css={override}
                 // size={150}
                 color={"#1BA500"}
-                loading={props.loadingState}
+                loading={loading}
               />
             </div>
           </div>
         ) : (
           <>
-            {props.tickets.map((ticket) => (
+            {tickets.map((ticket) => (
               <div key={ticket.id} className={classes.tableRow}>
                 <Row style={{ margin: "0px", padding: "0px", width: "100%" }}>
                   <>
@@ -80,7 +83,12 @@ const BookingTable = (props) => {
                           <Col xs={12} sm={12} md={12} lg={4}>
                             <div className={classes.editButton}>
                               <Button
-                                onClick={() => props.getOneTicket(ticket.id)}
+                                onClick={() =>
+                                  dispatch({
+                                    type: "GET_TICKET",
+                                    ticketID: ticket.id,
+                                  })
+                                }
                                 className={classes.editButton}
                                 startIcon={<Edit />}
                               >
@@ -96,7 +104,9 @@ const BookingTable = (props) => {
 
                 <div className={classes.CancelContainer} style={{}}>
                   <Button
-                    onClick={() => props.deleteHandler(ticket.id)}
+                    onClick={() =>
+                      dispatch({ type: "DELETE_TICKET", ticketID: ticket.id })
+                    }
                     variant="contained"
                     color="primary"
                     disableElevation

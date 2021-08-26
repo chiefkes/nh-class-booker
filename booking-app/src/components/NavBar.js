@@ -1,4 +1,5 @@
 import React from "react";
+import firebase from "../services/firebase";
 // @ts-ignore
 import logo from "./../bp_logo_inverse.svg";
 import {
@@ -10,7 +11,6 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
-import firebase from "./../services/firestore";
 
 const NavBar = ({ user }) => {
   const classes = useStyles();
