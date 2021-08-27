@@ -44,7 +44,7 @@ export const reducer = (state, action) => {
       return {
         ...state,
         classesToBook: state.classesToBook.filter(
-          (thisClass) => thisClass !== action.key
+          (thisClass) => thisClass !== action.class
         ),
       };
     case "TIMES":

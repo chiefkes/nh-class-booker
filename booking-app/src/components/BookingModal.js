@@ -9,20 +9,17 @@ import {
   DialogContent,
   DialogTitle,
   Button,
-  Menu,
   Grid,
-  Chip,
-  MenuItem,
   FormGroup,
   Checkbox,
   FormControlLabel,
   FormHelperText,
   Container,
 } from "@material-ui/core";
-import { AddCircle, HighlightOff } from "@material-ui/icons";
 import { ValidatorForm } from "react-material-ui-form-validator";
 import { FormControl } from "@material-ui/core";
 import { useStyles } from "./../style/BookingModalStyles";
+import MultiSelectChip from "./MultiSelectChip";
 
 const allClasses = [
   "BODYPUMP™",
@@ -34,15 +31,10 @@ const allClasses = [
   "SKILLROW",
 ];
 
-// TODO:
-// Make Multi-Chip Delete into an extendable component
-// Even NPM publishable
 const BookingModal = (props) => {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = useState(null);
   const [checkBoxError, setCheckBoxError] = useState(false);
   const [classError, setClassError] = useState(false);
-  const numGymClasses = allClasses.length;
   const [state, dispatch] = useContext(GlobalReducerContext);
   const {
     classesToBook,
@@ -52,18 +44,6 @@ const BookingModal = (props) => {
     ticketMode,
     ticketID,
   } = state;
-
-  const handleClassesMenu = (event) => {
-    if (classesToBook.length >= numGymClasses) return;
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleAddClass = (classToAdd) => {
-    console.log("close");
-    setAnchorEl(null);
-    setClassError(false);
-    dispatch({ type: "ADD_CLASS", classToAdd });
-  };
 
   const handleExit = () => {
     dispatch({ type: "MODAL", modalIsOpen: false });
@@ -169,7 +149,7 @@ const BookingModal = (props) => {
                       }
                       label="PM"
                     />
-                    {checkBoxError ? (
+                    {checkBoxError && (
                       <FormHelperText
                         style={{
                           color: "red",
@@ -179,8 +159,6 @@ const BookingModal = (props) => {
                       >
                         Please pick a booking time!
                       </FormHelperText>
-                    ) : (
-                      ""
                     )}
                   </Container>
                 </FormGroup>
@@ -188,45 +166,18 @@ const BookingModal = (props) => {
             </Grid>
 
             <Grid item xs={12}>
-              <div className={classes.chips}>
-                {classesToBook.map((thisClass) => {
-                  return (
-                    <Chip
-                      deleteIcon={
-                        <HighlightOff
-                          style={{
-                            color: "#FFFFFF",
-                          }}
-                        />
-                      }
-                      style={{
-                        backgroundColor: "#00a200",
-                        color: "#FFFFFF",
-                      }}
-                      className={classes.chip}
-                      label={thisClass}
-                      key={thisClass}
-                      data-label={thisClass}
-                      onDelete={() =>
-                        dispatch({ type: "REMOVE_CLASS", key: thisClass })
-                      }
-                    />
-                  );
-                })}
-                {classesToBook.length < numGymClasses ? (
-                  <Chip
-                    key={"add-class"}
-                    label={"Add Class"}
-                    onClick={handleClassesMenu}
-                    className={classes.chip}
-                    color={"primary"}
-                    icon={<AddCircle />}
-                  />
-                ) : (
-                  <></>
-                )}
-              </div>
-              {classError ? (
+              <MultiSelectChip
+                items={allClasses}
+                selectedItems={classesToBook}
+                onAddChip={(classToAdd) => {
+                  setClassError(false);
+                  dispatch({ type: "ADD_CLASS", classToAdd });
+                }}
+                onDeleteChip={(classToDel) =>
+                  dispatch({ type: "REMOVE_CLASS", class: classToDel })
+                }
+              />
+              {classError && (
                 <FormHelperText
                   style={{
                     color: "red",
@@ -236,29 +187,7 @@ const BookingModal = (props) => {
                 >
                   Select at least one class!
                 </FormHelperText>
-              ) : (
-                ""
               )}
-              <Menu
-                id="class-dropdown"
-                anchorEl={anchorEl}
-                onClose={() => setAnchorEl(null)}
-                open={Boolean(anchorEl)}
-              >
-                {allClasses
-                  .filter((thisClass) => !classesToBook.includes(thisClass))
-                  .map((thisClass) => {
-                    return (
-                      <MenuItem
-                        onClick={() => handleAddClass(thisClass)}
-                        key={thisClass}
-                        value={thisClass}
-                      >
-                        {thisClass}
-                      </MenuItem>
-                    );
-                  })}
-              </Menu>
             </Grid>
           </Grid>
         </DialogContent>

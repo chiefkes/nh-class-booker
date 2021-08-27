@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import firebase from "../services/firebase";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   Container,
   CssBaseline,
@@ -12,10 +15,7 @@ import {
 } from "@material-ui/core";
 import { LockRounded } from "@material-ui/icons";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { BeatLoader } from "react-spinners";
-import firebase from "../services/firebase";
 import { useStyles } from "../style/LoginStyles";
 
 const Login = () => {
