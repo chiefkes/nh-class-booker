@@ -119,7 +119,7 @@ const BookingModal = (props) => {
       </DialogTitle>
       <ValidatorForm onSubmit={onSubmit}>
         <DialogContent>
-          <Grid container justify="center" className={classes.mainGrid}>
+          <Grid container justify="center">
             <Grid item xs={12} style={{ marginBottom: "10px" }}>
               <MuiPickersUtilsProvider utils={LuxonUtils}>
                 <DatePicker
@@ -145,7 +145,7 @@ const BookingModal = (props) => {
 
             <Grid item xs={12}>
               <FormControl variant="outlined" component="fieldset">
-                <FormGroup row className={"classes.checkBoxRoot"}>
+                <FormGroup row>
                   <Container className={classes.checkBoxContainer}>
                     <FormControlLabel
                       control={

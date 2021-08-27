@@ -1,39 +1,11 @@
 import { makeStyles } from "@material-ui/core";
 
 export const useStyles = makeStyles((theme) => ({
-  mainGrid: {
-    alignItems: "left",
-  },
-  button: {
-    marginTop: theme.spacing(2),
+  checkBoxContainer: {
+    padding: "5px 5px 20px 5px",
   },
   checkBox: {
     color: "#00a200",
-  },
-  formControl: {
-    width: "100%",
-  },
-  checkBoxRoot: {
-    display: "none",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  checkBoxContainer: {
-    paddingBottom: "20px",
-    justifyContent: "center",
-    padding: "5px",
-  },
-  FormLabel: {
-    position: "absolute",
-    top: -20,
-    left: 10,
-    width: "95px",
-    // display: "block",
-    whiteSpace: "nowrap",
-    padding: "8px",
-    paddingBottom: "0px",
-    backgroundColor: "#FFFFFF",
-    zIndex: 2,
   },
   chips: {
     display: "flex",
@@ -48,8 +20,5 @@ export const useStyles = makeStyles((theme) => ({
     fontFamily: "Avenir Black, sans-serif",
     fontWeight: 500,
     fontSize: "0.9rem",
-  },
-  noLabel: {
-    marginTop: theme.spacing(3),
   },
 }));

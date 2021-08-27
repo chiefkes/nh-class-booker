@@ -37,9 +37,7 @@ const Login = () => {
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then((response) => {
-        setLoading(false);
-      })
+      .then(() => setLoading(false))
       .catch((error) => {
         toast.error(error.message);
         setLoading(false);

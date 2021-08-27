@@ -35,14 +35,6 @@ export const reducer = (state, action) => {
         timesToBook: action.timesToBook,
         modalIsOpen: true,
       };
-    case "ERROR":
-      toast.error(action.error.message);
-      return {
-        ...state,
-        error: action.error,
-        loading: false,
-        // modalIsOpen: false,
-      };
     case "ADD_CLASS":
       return {
         ...state,
@@ -62,6 +54,14 @@ export const reducer = (state, action) => {
       };
     case "DATE":
       return { ...state, date: action.date };
+    case "ERROR":
+      toast.error(action.error.message);
+      return {
+        ...state,
+        error: action.error,
+        loading: false,
+        // modalIsOpen: false,
+      };
     default:
       throw new Error("Unsupported action in reducer");
   }

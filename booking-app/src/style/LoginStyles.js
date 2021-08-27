@@ -1,12 +1,6 @@
 import { makeStyles } from "@material-ui/core";
 
 export const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(3),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
   greeting: {
     [theme.breakpoints.down("xs")]: {
       fontWeight: 300,
@@ -14,17 +8,26 @@ export const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.up("sm")]: {
       fontSize: "2.1em",
-      // fontWeight: 100,
     },
 
     marginTop: "60px",
-    flex: "1 1 100%",
+    textAlign: "center",
     padding: "0px",
     lineHeight: 1.2,
     textIndent: "-2px",
     color: "#5F6062",
     fontFamily: "Avenir Light, sans-serif",
     letterSpacing: "-.06em",
+  },
+  card: {
+    marginTop: "35px",
+    padding: "0px 20px 20px 20px",
+  },
+  paper: {
+    marginTop: theme.spacing(3),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
@@ -47,7 +50,6 @@ export const useStyles = makeStyles((theme) => ({
       backgroundColor: "#388232",
       color: "#FFFFFF",
     },
-    // background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
     backgroundColor: "#00a200",
     fontFamily: "Avenir Black, sans-serif",
     fontSize: "0.9rem",
@@ -55,17 +57,6 @@ export const useStyles = makeStyles((theme) => ({
     borderRadius: "40px",
     color: "#FFFFFF",
     background: "#00a200",
-    marginTop: "0px",
-    marginBottom: "10px",
-  },
-  card: {
-    marginTop: "35px",
-    paddingLeft: "20px",
-    paddingRight: "20px",
-    paddingBottom: "20px",
-  },
-  pointer: {
-    cursor: "pointer",
-    color: "red",
+    margin: "0px 0px 10px 0px",
   },
 }));

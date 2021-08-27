@@ -1,20 +1,15 @@
 import { makeStyles } from "@material-ui/core";
 
 export const useStyles = makeStyles((theme) => ({
-  html: {
-    height: "100%",
-  },
-
   tableRoot: {
     marginTop: "40px",
     maxWidth: "100%",
     padding: "0px",
-    overflow: "hidden",
+    // overflow: "hidden",
     position: "relative",
   },
 
   flexGrid: {
-    margin: "0px",
     padding: "10px",
     maxWidth: "800px",
     // @ts-ignore
@@ -46,8 +41,6 @@ export const useStyles = makeStyles((theme) => ({
     },
 
     display: "flex",
-    justifyContent: "space-between",
-    width: "100%",
   },
 
   bookingMainInfo: {
@@ -66,12 +59,8 @@ export const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#F9F9F9",
-    padding: "0px",
-    width: "100%",
     height: "100px",
     borderBottom: "none",
-    borderRadius: "0px",
-    overflow: "hidden",
   },
 
   dateCol: {
@@ -133,7 +122,6 @@ export const useStyles = makeStyles((theme) => ({
     display: "flex",
     textAlign: "left",
     padding: "0px 0px 10px 5px",
-    margin: 0,
     // @ts-ignore
     [theme.breakpoints.down("992")]: {
       padding: "5px 0px 2.5px 3px",
@@ -197,9 +185,7 @@ export const useStyles = makeStyles((theme) => ({
   },
 
   classesWrapper: {
-    // height: "100%",
     display: "block",
-    // alignText: "center",
     padding: "5px",
   },
 
@@ -217,7 +203,6 @@ export const useStyles = makeStyles((theme) => ({
     },
     height: "100%",
     display: "flex",
-    padding: "0px",
     fontFamily: "Avenir Black, sans-serif",
     lineHeight: "1",
     color: "#999999",
@@ -240,13 +225,11 @@ export const useStyles = makeStyles((theme) => ({
     fontFamily: "Avenir Black, sans-serif",
     fontWeight: 600,
     color: "#00a200",
-    margin: "0px 0px 0px 0px",
     width: "90px",
     height: "40px",
     display: "flex",
     left: "-8px",
     borderRadius: "20px",
-    offsetPosition: "-100px",
   },
 
   CancelContainer: {
@@ -260,10 +243,8 @@ export const useStyles = makeStyles((theme) => ({
       alignItems: "flex-start",
       marginTop: "32px",
     },
-    position: "absolute",
     right: "1%",
     width: "0px",
-    display: "flex",
   },
 
   CancelButton: {
@@ -281,7 +262,7 @@ export const useStyles = makeStyles((theme) => ({
       margin: "0px 13px 31px 0px",
     },
     position: "absolute",
-    height: "inherit",
+    // height: "inherit",
     right: "1%",
     borderRadius: "20px",
     backgroundColor: "#FFFFFF",
@@ -289,6 +270,5 @@ export const useStyles = makeStyles((theme) => ({
     fontFamily: "Avenir Black, sans-serif",
     fontSize: "0.9rem",
     fontWeight: 700,
-    minWidth: "auto",
   },
 }));

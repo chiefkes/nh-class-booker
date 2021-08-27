@@ -3,18 +3,6 @@ import { makeStyles } from "@material-ui/core";
 import backgroundImage from "./../media/account_landing_1500.jpg";
 
 export const useStyles = makeStyles((theme) => ({
-  mainContainer: {
-    // minWidth: "100vw",
-    [theme.breakpoints.down("xs")]: {
-      width: "98%",
-    },
-    [theme.breakpoints.up("sm")]: {
-      width: "85%",
-    },
-    // paddingBottom: "80px",
-    maxWidth: "1000px",
-  },
-
   main: {
     position: "relative",
     minHeight: "90vh",
@@ -36,18 +24,25 @@ export const useStyles = makeStyles((theme) => ({
     },
   },
 
+  mainContainer: {
+    [theme.breakpoints.down("xs")]: {
+      width: "98%",
+    },
+    [theme.breakpoints.up("sm")]: {
+      width: "85%",
+    },
+    maxWidth: "1000px",
+  },
+
   greetingText: {
-    margin: "auto",
     marginBottom: "60px",
     background: "#DFDFDF",
   },
 
   stickyContainer: {
-    minWidth: "100%",
     display: "flex",
     justifyContent: "center",
-    margin: "0px",
-    padding: "0px",
+    padding: 0,
     position: "sticky",
     top: 0,
     zIndex: 2,
@@ -56,16 +51,16 @@ export const useStyles = makeStyles((theme) => ({
   upcomingBookings: {
     [theme.breakpoints.down("xs")]: {
       fontWeight: 550,
+      fontSize: "1.7rem",
     },
     [theme.breakpoints.up("sm")]: {
       fontWeight: 780,
+      fontSize: "1.8rem",
     },
-    flex: "1 1 100%",
     color: "#5F6062",
     fontFamily: "Avenir, sans-serif",
     fontStyle: "Black",
     lineHeight: 1.2,
-    fontSize: "1.8rem",
   },
 
   stickyHeader: {
@@ -90,12 +85,9 @@ export const useStyles = makeStyles((theme) => ({
     },
 
     marginTop: "40px",
-    flex: "1 1 100%",
-    padding: "0px",
     paddingBottom: "50px",
     color: "#5F6062",
     fontFamily: "Avenir Light, sans-serif",
-    // fontStyle: "light",
     letterSpacing: "-3.6px",
   },
 
@@ -108,7 +100,6 @@ export const useStyles = makeStyles((theme) => ({
       fontSize: "18px",
       fontWeight: 400,
     },
-    flex: "1 1 100%",
     padding: "18px",
     color: "#5F6062",
     fontFamily: "Avenir Roman, sans-serif",
