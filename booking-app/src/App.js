@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import NavBar from "./components/NavBar";
-import Login from "./authentication/Login";
+import Login from "./components/Login";
 import BookingPage from "./components/BookingPage";
 import useUserAuthState from "./hooks/useUserAuthState";
 import { auth } from "./services/firebase";

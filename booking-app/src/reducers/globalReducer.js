@@ -125,6 +125,7 @@ export const asyncActionHandlers = {
     async (action) => {
       try {
         await deleteTicket(action.ticketID);
+        toast.success("Booking Ticket Deleted Successfully");
         await getList(dispatch);
       } catch (error) {
         dispatch({ type: "ERROR", error });
