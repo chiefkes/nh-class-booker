@@ -1,5 +1,15 @@
-import firebase from "./firebase";
-const firestore = firebase.firestore();
+import firebaseApp from "./firebase";
+import {
+  getFirestore,
+  collection,
+  doc,
+  getDocs,
+  getDoc,
+  deleteDoc,
+  setDoc,
+} from "@firebase/firestore/lite";
+const db = getFirestore(firebaseApp);
+const ticketsRef = collection(db, "BookingTickets");
 
 function bookingTicket(id, Date, classesToBook, timesToBook) {
   this.id = id;
@@ -10,10 +20,9 @@ function bookingTicket(id, Date, classesToBook, timesToBook) {
 
 export const getTickets = async () => {
   try {
-    const response = await firestore.collection("BookingTickets");
-    const data = await response.get();
     let array = [];
-    data.forEach((doc) => {
+    const querySnapshot = await getDocs(ticketsRef);
+    querySnapshot.forEach((doc) => {
       const ticket = new bookingTicket(
         doc.id,
         doc.data().Date,
@@ -23,7 +32,6 @@ export const getTickets = async () => {
 
       array.push(ticket);
     });
-    // console.log(array);
     return array;
   } catch (error) {
     throw error;
@@ -32,7 +40,7 @@ export const getTickets = async () => {
 
 export const addTicket = async (data) => {
   try {
-    await firestore.collection("BookingTickets").doc(data.Date).set(data);
+    await setDoc(doc(ticketsRef, data.Date), data);
   } catch (error) {
     throw error;
   }
@@ -40,9 +48,13 @@ export const addTicket = async (data) => {
 
 export const getTicket = async (id) => {
   try {
-    const customer = await firestore.collection("BookingTickets").doc(id);
-    const data = await customer.get();
-    return data.data();
+    const docRef = doc(ticketsRef, id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      throw new Error(`No with id ${id} does not exist`);
+    }
   } catch (error) {
     throw error;
   }
@@ -50,8 +62,10 @@ export const getTicket = async (id) => {
 
 export const updateTicket = async (id, data) => {
   try {
-    await firestore.collection("BookingTickets").doc(id).delete();
-    await firestore.collection("BookingTickets").doc(data.Date).set(data);
+    if (id !== data.Date) {
+      await deleteDoc(doc(ticketsRef, id));
+    }
+    await setDoc(doc(ticketsRef, data.Date), data);
   } catch (error) {
     throw error;
   }
@@ -59,7 +73,7 @@ export const updateTicket = async (id, data) => {
 
 export const deleteTicket = async (id) => {
   try {
-    await firestore.collection("BookingTickets").doc(id).delete();
+    await deleteDoc(doc(ticketsRef, id));
   } catch (error) {
     throw error;
   }

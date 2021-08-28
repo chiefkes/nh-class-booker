@@ -1,4 +1,5 @@
 import { useReducer, useEffect, useMemo } from "react";
+import { onAuthStateChanged } from "firebase/auth";
 
 function authReducer(state, action) {
   switch (action.type) {
@@ -28,7 +29,8 @@ export default function useUserAuthState(auth) {
   });
 
   useEffect(() => {
-    const listener = auth.onAuthStateChanged(
+    const listener = onAuthStateChanged(
+      auth,
       (user) => dispatch({ type: "user", user }),
       (error) => dispatch({ type: "error", error })
     );

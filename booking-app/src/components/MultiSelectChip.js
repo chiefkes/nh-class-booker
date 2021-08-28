@@ -20,28 +20,26 @@ export default function MultiSelectChip({
 
   return (
     <div className={classes.chipsWrapper}>
-      {selectedItems.map((item) => {
-        return (
-          <Chip
-            deleteIcon={
-              <HighlightOff
-                style={{
-                  color: "#FFFFFF",
-                }}
-              />
-            }
-            style={{
-              backgroundColor: "#00a200",
-              color: "#FFFFFF",
-            }}
-            className={classes.chip}
-            label={item}
-            key={item}
-            data-label={item}
-            onDelete={() => onDeleteChip(item)}
-          />
-        );
-      })}
+      {selectedItems.map((item) => (
+        <Chip
+          deleteIcon={
+            <HighlightOff
+              style={{
+                color: "#FFFFFF",
+              }}
+            />
+          }
+          style={{
+            backgroundColor: "#00a200",
+            color: "#FFFFFF",
+          }}
+          className={classes.chip}
+          label={item}
+          key={item}
+          data-label={item}
+          onDelete={() => onDeleteChip(item)}
+        />
+      ))}
       {selectedItems.length < numItems && (
         <Chip
           key={"add-class"}
@@ -60,20 +58,18 @@ export default function MultiSelectChip({
       >
         {items
           .filter((item) => !selectedItems.includes(item))
-          .map((item) => {
-            return (
-              <MenuItem
-                onClick={() => {
-                  setAnchorEl(null);
-                  onAddChip(item);
-                }}
-                key={item}
-                value={item}
-              >
-                {item}
-              </MenuItem>
-            );
-          })}
+          .map((item) => (
+            <MenuItem
+              onClick={() => {
+                setAnchorEl(null);
+                onAddChip(item);
+              }}
+              key={item}
+              value={item}
+            >
+              {item}
+            </MenuItem>
+          ))}
       </Menu>
     </div>
   );

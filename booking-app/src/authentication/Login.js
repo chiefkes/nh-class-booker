@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import firebase from "../services/firebase";
+import { auth } from "../services/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -34,9 +35,7 @@ const Login = () => {
 
   const handleLogin = () => {
     setLoading(true);
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
+    signInWithEmailAndPassword(auth, email, password)
       .then(() => setLoading(false))
       .catch((error) => {
         toast.error(error.message);

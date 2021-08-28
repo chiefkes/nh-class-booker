@@ -4,10 +4,10 @@ import NavBar from "./components/NavBar";
 import Login from "./authentication/Login";
 import BookingPage from "./components/BookingPage";
 import useUserAuthState from "./hooks/useUserAuthState";
-import firebase from "./services/firebase";
+import { auth } from "./services/firebase";
 
 function App() {
-  const [user, loading, error] = useUserAuthState(firebase.auth());
+  const [user, loading, error] = useUserAuthState(auth);
 
   if (error) return <p>{error}</p>;
   if (loading) return <NavBar user={user} />;

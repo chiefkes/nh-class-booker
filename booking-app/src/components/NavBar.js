@@ -1,5 +1,6 @@
 import React from "react";
-import firebase from "../services/firebase";
+import { auth } from "../services/firebase";
+import { signOut } from "firebase/auth";
 // @ts-ignore
 import logo from "./../bp_logo_inverse.svg";
 import {
@@ -18,9 +19,7 @@ const NavBar = ({ user }) => {
   const open = Boolean(anchorEl);
 
   const handleLogout = () => {
-    // localStorage.removeItem("user");
-    // setUserState();
-    firebase.auth().signOut();
+    signOut(auth);
     setAnchorEl(null);
   };
 
