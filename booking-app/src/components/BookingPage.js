@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import GlobalReducerContext from "../contexts/GlobalReducerContext";
 import { useReducerAsync } from "use-reducer-async";
-import Sticky from "./Sticky";
+import useSticky from "../hooks/useSticky";
 import BookingTable from "./BookingTable";
 import {
   reducer,
@@ -27,6 +27,7 @@ function BookingPage({ user }) {
     initialState,
     asyncActionHandlers
   );
+  const { StickySentinel, isSticky } = useSticky();
 
   useEffect(() => {
     dispatch({ type: "GET_TICKETS" });
@@ -52,40 +53,33 @@ function BookingPage({ user }) {
           </TableContainer>
           <ToastContainer />
         </Container>
-        <Sticky>
-          {(isSticky) => (
-            <Container
-              className={classes.stickyContainer}
-              style={{ backgroundColor: isSticky && "#F7F7F7" }}
-            >
-              <Grid
-                container
-                alignItems="center"
-                className={classes.stickyHeader}
+        <StickySentinel />
+        <Container
+          className={classes.stickyContainer}
+          style={{ backgroundColor: isSticky && "#F7F7F7" }}
+        >
+          <Grid container alignItems="center" className={classes.stickyHeader}>
+            <Grid item xs={8}>
+              <Typography
+                className={classes.upcomingBookings}
+                variant="h6"
+                component="div"
               >
-                <Grid item xs={8}>
-                  <Typography
-                    className={classes.upcomingBookings}
-                    variant="h6"
-                    component="div"
-                  >
-                    Your upcoming bookings
-                  </Typography>
-                </Grid>
-                <Grid item xs={4}>
-                  <Button
-                    variant="contained"
-                    onClick={() => dispatch({ type: "MODAL_ADD" })}
-                    className={classes.button}
-                    startIcon={<AddCircle />}
-                  >
-                    Add
-                  </Button>
-                </Grid>
-              </Grid>
-            </Container>
-          )}
-        </Sticky>
+                Your upcoming bookings
+              </Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <Button
+                variant="contained"
+                onClick={() => dispatch({ type: "MODAL_ADD" })}
+                className={classes.button}
+                startIcon={<AddCircle />}
+              >
+                Add
+              </Button>
+            </Grid>
+          </Grid>
+        </Container>
         <Container
           className={classes.mainContainer}
           style={{ paddingBottom: "80px" }}

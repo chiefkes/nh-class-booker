@@ -70,3 +70,5 @@ research/POST-addToBasket.jsonc
 research/POST-checkoutBasket.jsonc
 research/POST-setAuthToken.jsonc
 .vscode/settings.json
+
+.vscode
